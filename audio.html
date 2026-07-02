@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AUDIO TO TEXT</title>
+    <!-- <link rel="stylesheet" href="style1.css"> -->
+    <style>
+/* ========== Global Styles ========== */
+* {
+    font-family: 'Poppins', 'Segoe UI', Roboto, sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: linear-gradient(135deg, #0a0a0f, #3a0d12);
+    color: #FBFEF9;
+    padding: 20px;
+}
+
+/* ========== Headings ========== */
+ h1 {
+  font-size: 48px;
+  font-weight: bold;
+  background: linear-gradient(90deg, #00c6ff, #0072ff);
+  /* Standard property */
+  background-clip: text;
+  /* Vendor prefix for Chrome, Safari, Edge */
+  -webkit-background-clip: text;
+  /* Make the inside of text transparent so gradient shows */
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  text-align: center;
+}
+
+h2 {
+    font-size: 22px;
+    margin-bottom: 20px;
+    font-weight: 600;
+    color: #FBFEF9;
+}
+
+/* ========== Form Container ========== */
+form {
+    max-width: 600px;
+    margin: 0 auto;
+    margin-top: 50px ;
+    padding: 25px;
+    border-radius: 12px;
+    background: #3a0d12;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.5);
+    animation: fadeIn 1s ease;
+}
+
+/* ========== Labels & Inputs ========== */
+label {
+    display: block;
+    margin-bottom: 10px;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+input[type="file"] {
+    margin-bottom: 15px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+/* ========== Drag & Drop Zone ========== */
+.drop-zone {
+    font-size: 16px;
+    border-radius: 12px;
+    padding: 40px 20px;
+    margin-bottom: 20px;
+    border: 3px dashed #0C6291;
+    text-align: left;
+    background: rgba(255,255,255,0.05);
+    transition: all 0.3s ease;
+}
+.drop-zone:hover {
+    border-color: #00c6ff;
+    background: rgba(0,198,255,0.05);
+    transform: scale(1.02);
+}
+.drop-zone::before {
+    content: "⬆️ Drag & Drop or Click to Upload";
+    display: block;
+    margin-bottom: 10px;
+    font-size: 15px;
+    color: #ddd;
+}
+
+/* ========== Buttons ========== */
+button, input[type="submit"] {
+    background: linear-gradient(135deg, #00c6ff, #0072ff);
+    border: none;
+    border-radius: 12px;
+    padding: 12px 20px;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+button:hover, input[type="submit"]:hover {
+    color: #000;
+    transform: scale(1.05);
+    box-shadow: 0 4px 15px rgba(0, 114, 255, 0.6);
+}
+
+/* ========== Instructions Box ========== */
+.instructions {
+    max-width: 600px;
+    margin: 30px auto;
+    padding: 20px;
+    border-radius: 12px;
+    background: rgba(255,255,255,0.05);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    line-height: 1.6;
+    align-items: left;
+}
+.instructions ul {
+    margin-top: 10px;
+    padding-left: 20px;
+}
+.instructions li {
+    margin-bottom: 10px;
+}
+
+/* ========== Loading Spinner ========== */
+.loading-indicator {
+    display: flex;
+    align-items: left;
+    justify-content: left;
+    gap: 10px;
+    margin-top: 20px;
+    font-size: 1.2em;
+    color: #2196F3;
+}
+.spinner {
+    width: 24px;
+    height: 24px;
+    border: 4px solid #0C6291;
+    border-top: 4px solid #00c6ff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+/* ========== Footer ========== */
+footer {
+    font-size: 14px;
+    color: #aaa;
+    text-align: center;
+    margin-top: 30px;
+}
+
+/* ========== Animations ========== */
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ========== Mobile Styles ========== */
+@media (max-width: 600px) {
+    h1 { font-size: 28px; }
+    form { padding: 18px; }
+    button, input[type="submit"] { width: 100%; font-size: 15px; }
+    .drop-zone { padding: 25px 10px; font-size: 14px; }
+}
+    </style>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
+</head>
+<body>
+    <h1>AUDIO TO TEXT</h1>
+    <form action="/audio" method="POST" enctype="multipart/form-data">
+        <label for="audioFile">Select audio file:</label>
+        <div id="drop-zone" class="drop-zone">
+            <span id="drop-zone-text">Drag & Drop audio file here or</span>
+            <input type="file" name="audioFile" id="audioFile" accept=".mp3, .wav, .ogg, .flac" required>
+        </div>
+        <br><br>
+        <input type="submit" value="Upload and Convert">
+    </form>
+
+    <div id="loading-indicator" style="display:none; justify-content:center; align-items:center;">
+        <p>Processing your audio, please wait...</p>
+    </div>
+
+    <br>
+    <h2>Instructions :- </h2>
+    <ul id="instructions">
+        <li>Upload your audio file to convert it into text.</li>
+        <li>Supported audio formats include MP3, WAV, OGG, and FLAC.</li>
+        <li>After uploading, the audio will be processed to extract text.</li>
+        <li>Please ensure the audio is clear for better transcription accuracy.</li>
+    </ul>
+    <p class="note">NOTE :- Ensure the audio file is clear for better transcription accuracy.</p>
+    <br>
+    <p>For any issues, contact support at <a href="mailto:ronakjindal@gmail.com">ronakjindal@gmail.com</a></p>
+    <p class="end">Supported formats: MP3, WAV, OGG, FLAC</p>
+    <br>
+    {% if error %}
+    <p style="color:red;">Error: {{ error }}</p>
+    {% endif %}
+    <br>
+    <footer>
+        <p class="end">&copy; 2023 Audio to Text Converter</p>
+    </footer>
+
+    
+    <script>
+        const dropZone = document.getElementById('drop-zone');
+        const fileInput = document.getElementById('audioFile');
+        const dropZoneText = document.getElementById('drop-zone-text');
+
+        dropZone.addEventListener('click', () => fileInput.click());
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('dragover');
+        });
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('dragover');
+        });
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('dragover');
+            if (e.dataTransfer.files.length) {
+                fileInput.files = e.dataTransfer.files;
+                dropZoneText.textContent = e.dataTransfer.files[0].name;
+            }
+        });
+        fileInput.addEventListener('change', function() {
+            if (this.files.length) {
+                dropZoneText.textContent = this.files[0].name;
+            }
+        });
+        document.querySelector('form').addEventListener('submit', function(e) {
+            document.getElementById('loading-indicator').style.display = 'flex';
+        });
+    </script>
+</body>
+</html>

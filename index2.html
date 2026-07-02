@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>AI Toolkit</title>
+    <style>
+        body {
+            background-color: black ;
+            margin: 0;
+            padding: 20px;
+            font-family: 'Times New Roman', Times, serif;
+            font-weight: bolder;
+            text-align: center;
+            margin-top: 50px;
+        }
+        h1 {
+            color: #CCFFCB;
+            font-size: 40px;
+            font-family: 'Times New Roman', Times, serif;
+            margin-bottom: 40px;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 10px auto;
+            font-size: 18px;
+            background-color: #CCFFCB;
+            border: none;
+            cursor: pointer;
+            display: block;
+            width: 200px;
+            font-weight: bolder;
+        }
+        button:hover {
+            background-color: #5db9eb;
+        }
+        @keyframes spin {
+    to { transform: rotate(360deg); }
+}
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ========== Mobile Styles ========== */
+@media (max-width: 600px) {
+    h1 { font-size: 28px; }
+    form { padding: 18px; }
+    button, input[type="submit"] { width: 100%; font-size: 15px; }
+    .drop-zone { padding: 25px 10px; font-size: 14px; }
+}
+    </style>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
+</head>
+<body>
+    <h1>WELCOME TO THE AI TOOLKIT</h1>
+    <button onclick="location.href='audio'" type="button">Audio to Text</button>
+    <button onclick="location.href='sentiment'" type="button">Sentiment Analysis</button>
+    <button onclick="location.href='summary'" type="button">Text Summary</button>
+</nav>
+</body>
+</html>
